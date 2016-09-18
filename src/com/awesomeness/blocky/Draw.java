@@ -13,7 +13,6 @@ public class Draw implements Serializable{
 	static final long serialVersionUID = -7298352464830308761L;
 	boolean keyDown = false;
 	float mul = 1;
-	public int score = -1;
 	public static String rotMode = "x";
 	public ArrayList<Object3d> objects = new ArrayList<Object3d>();
 	public static int W = 700;
@@ -21,7 +20,6 @@ public class Draw implements Serializable{
 	public Vec3 camRot = new Vec3(0,0,0);
 	public static final Vec3 CENTER = new Vec3(W/2, H/2, 0);
 	public FrameDraw panel;
-	public JLabel scoreLabel;
 	public static JFrame frame;
 	public static Object3d player;
 //	public BoxCollider player.boxCollider;
@@ -32,8 +30,6 @@ public class Draw implements Serializable{
 	public static float frameRate = 10;
 	public static float rate = frameRate/30;
 	static boolean[] keys;
-	transient BufferedImage cursorImg;
-	transient Cursor blankCursor;
 	void load(){
 		try {
 		    Robot robot = new Robot();
@@ -48,24 +44,13 @@ public class Draw implements Serializable{
 //		player.boxCollider = player.boxCollider;
 		frame = new JFrame();
 		
-		if (score >= 0) {
-			scoreLabel = new JLabel(score + "");
-		} else {
-			scoreLabel = new JLabel("0");
-		}
-		scoreLabel.setSize(new Dimension(100, 100));
-		scoreLabel.setHorizontalAlignment((int) JLabel.CENTER_ALIGNMENT);
-		scoreLabel.setFont(new Font("Arial", 50, 50));
-		scoreLabel.setOpaque(true);
-		
 		panel = new FrameDraw();
 		panel.setSize(new Dimension(W, H));
 		
-		frame.setPreferredSize(new Dimension(W, H + 50));
+		frame.setPreferredSize(new Dimension(W, H));
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
-		frame.add(scoreLabel, BorderLayout.NORTH);
 		frame.add(panel, BorderLayout.CENTER);
 		
 		(panel).paintComponent(panel.getGraphics());
@@ -288,18 +273,6 @@ public class Draw implements Serializable{
 //			Object3d.addVelocityArray(objects, new Vec3(0, -1, 0).multiply(0.6f*rate));//gravity happens to be 0.32 units be second
 			player.addVelocity(new Vec3(0, 1, 0).multiply(0.6f*rate));
 			player.boxCollider.isTouchingArrayGrav(objects);
-			for(int i=objects.size()-1; i>=0; i--){
-				Object3d obj = objects.get(i);
-				if(player.boxCollider.isTouching(obj.boxCollider)){
-					if(objects.size() - i-1>score){
-						score = objects.size() - i - 1;
-						scoreLabel.setText(score + "");
-					}
-					if(score == objects.size() - 1){
-						scoreLabel.setText("YOU WIN!!!");
-					}
-				}
-			}
 			Object3d.updateArray(objects);
 			boolean updated = false;
 			mul = 1;
@@ -337,10 +310,7 @@ public class Draw implements Serializable{
 				System.exit(0);
 			}
 //			System.out.println(y);
-			cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-			blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-				    cursorImg, new Point(0, 0), "blank cursor");
-			this.setCursor(blankCursor);
+			this.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 	        int mouseX = MouseInfo.getPointerInfo().getLocation().x;  
 			int mouseY = MouseInfo.getPointerInfo().getLocation().y;
 			int distX = W/2 - mouseX;
