@@ -93,15 +93,8 @@ public class Vec3 implements Serializable{
 		rot.y = (float) Math.toRadians(rot.y);
 		rot.z = (float) Math.toRadians(rot.z);
 		Vec3 rVec = new Vec3(0,0,0);
-		rVec.y += Math.sin(rot.x);
-		rVec.z += Math.sin(rot.x);
-		
-		rVec.x += Math.sin(rot.z);
-		rVec.y += Math.sin(rot.z);
-		
 		rVec.x += Math.sin(rot.y);
 		rVec.z += Math.cos(rot.y);
-		
 		return rVec;
 	}
 	
@@ -111,12 +104,6 @@ public class Vec3 implements Serializable{
 		rot.y = (float) Math.toRadians(rot.y);
 		rot.z = (float) Math.toRadians(rot.z);
 		Vec3 rVec = new Vec3(0,0,0);
-		rVec.z += Math.sin(rot.x);
-		rVec.y += Math.sin(rot.x);
-		
-		rVec.y += Math.sin(rot.z);
-		rVec.z += Math.sin(rot.z);
-		
 		rVec.z -= Math.sin(rot.y);
 		rVec.x += Math.cos(rot.y);
 		return rVec;

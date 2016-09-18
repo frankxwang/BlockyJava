@@ -14,24 +14,17 @@ public class Draw implements Serializable{
 	boolean keyDown = false;
 	float mul = 1;
 	public int score = -1;
-	public static int xRot = 0;
-	public static int yRot = 0;
-	public static int zRot = 0;
 	public static String rotMode = "x";
 	public ArrayList<Object3d> objects = new ArrayList<Object3d>();
 	public static int W = 700;
 	public static int H = 700;
-	public static Vec3 cam = new Vec3(W/2, H/2 , 0);
 	public Vec3 camRot = new Vec3(0,0,0);
-	public static int x = 0;
-	public static int y = 200;
-	public static int z = 0;
 	public static final Vec3 CENTER = new Vec3(W/2, H/2, 0);
 	public FrameDraw panel;
 	public JLabel scoreLabel;
 	public static JFrame frame;
 	public static Object3d player;
-//	public BoxCollider playerBox;
+//	public BoxCollider player.boxCollider;
 	public static boolean jump = false;
 	public static boolean grounded = false;
 	public static boolean toggled = false;
@@ -51,8 +44,8 @@ public class Draw implements Serializable{
 			keys = new boolean[i];
 		}
 		player = new RectPrism(CENTER.add(new Vec3(0, 50, 0)), 50, 50, 50);
-//		playerBox = new BoxCollider(CENTER.add(new Vec3(0, 50, 0)), CENTER.add(new Vec3(1, 50, 1)));
-//		player.boxCollider = playerBox;
+//		player.boxCollider = new BoxCollider(CENTER.add(new Vec3(0, 50, 0)), CENTER.add(new Vec3(1, 50, 1)));
+//		player.boxCollider = player.boxCollider;
 		frame = new JFrame();
 		
 		if (score >= 0) {
@@ -185,27 +178,28 @@ public class Draw implements Serializable{
 		}
 		private int[] getXY(Vec3 vec){
 			Vec3 point = vec.clone();
-			point.rotate("x", new Vec3(cam.x, cam.y, cam.z), -camRot.x);
-			point.rotate("y", new Vec3(cam.x, cam.y, cam.z), -camRot.y);
-			point.rotate("z", new Vec3(cam.x, cam.y, cam.z), -camRot.z);
+			point.rotate("x", new Vec3(player.position.x, player.position.y, player.position.z), -camRot.x);
+			point.rotate("y", new Vec3(player.position.x, player.position.y, player.position.z), -camRot.y);
+			point.rotate("z", new Vec3(player.position.x, player.position.y, player.position.z), -camRot.z);
 			int x = (int) point.x;
 			int y = (int) point.y;
 			int z = (int) point.z;
 			
 			int average_len = H/2;
 			int ry;
-			if(cam.z >= z+average_len){
-				ry=(int) (W-cam.y + y);
+			if(player.position.z >= z+average_len){
+				ry=(int) (W-player.position.y + y);
 			}else{
-				ry = (int) (((y-cam.y) * ( average_len) ) / ( z+ ( average_len) -cam.z)) + H/2;
+				ry = (int) (((y-player.position.y) * ( average_len) ) / ( z+ ( average_len) -player.position.z)) + H/2;
 			}
+			ry += W/2-100;
 			
 			average_len = W/2;
 			int rx;
-			if(cam.z >= z+average_len){
-				rx = (int) (((x-cam.x) * ( average_len ) ) / (150)) + W/2;
+			if(player.position.z >= z+average_len){
+				rx = (int) (((x-player.position.x) * ( average_len ) ) / (150)) + W/2;
 			}else{
-				rx= (int) (((x-cam.x) * ( average_len ) ) / ( z + ( W/2) -cam.z)) + W/2;
+				rx= (int) (((x-player.position.x) * ( average_len ) ) / ( z + ( W/2) -player.position.z)) + W/2;
 			}
 			int[] i = {rx, ry};
 			return i;
@@ -287,28 +281,16 @@ public class Draw implements Serializable{
 			
 		}
 		public void update(){
-			BoxCollider playerBox = player.boxCollider;
 			if(ticks > 0 && mul == 1){
 				ticks -= rate;
 			}
 			panel.requestFocus();
 //			Object3d.addVelocityArray(objects, new Vec3(0, -1, 0).multiply(0.6f*rate));//gravity happens to be 0.32 units be second
 			player.addVelocity(new Vec3(0, 1, 0).multiply(0.6f*rate));
-			ArrayList left = new ArrayList<Object3d>();
-			ArrayList right = new ArrayList<Object3d>();
-			for(int i=objects.size()-1; i>=0; i--){
-				if(i%2 == 0){
-					left.add(objects.get(i));
-				}else{
-					right.add(objects.get(i));
-				}
-			}
-			Object3d.setVelocityArrayX(left, 1, 500);
-			Object3d.setVelocityArrayX(right, -1, 500);
-			playerBox.isTouchingArrayGrav(objects);
+			player.boxCollider.isTouchingArrayGrav(objects);
 			for(int i=objects.size()-1; i>=0; i--){
 				Object3d obj = objects.get(i);
-				if(playerBox.isTouching(obj.boxCollider)){
+				if(player.boxCollider.isTouching(obj.boxCollider)){
 					if(objects.size() - i-1>score){
 						score = objects.size() - i - 1;
 						scoreLabel.setText(score + "");
@@ -326,52 +308,21 @@ public class Draw implements Serializable{
 			}
 			mul*=rate;
 			if(keys[KeyEvent.VK_W] && keyDown){
-//				Object3d.translateArray(objects, Vec3.FORWARD.multiply(10*mul));
-//				player.translate(Vec3.FORWARD.multiply(10*mul));
 				player.translate(player.position.forward(camRot).multiply(10*mul));
-//				player.update();
-				cam = player.position;
-				z -= 10;
 			} if(keys[KeyEvent.VK_S] && keyDown){
-//				Object3d.translateArray(objects, Vec3.BACKWARD.multiply(10*mul));
-//				player.translate(Vec3.BACKWARD.multiply(10*mul));
 				player.translate(player.position.forward(camRot).multiply(-10*mul));
-//				player.update();
-				cam = player.position;
-				z += 10;
 			} if(keys[KeyEvent.VK_A] && keyDown){
-//				Object3d.translateArray(objects, Vec3.LEFT.multiply(10*mul));
-//				player.translate(Vec3.LEFT.multiply(10*mul));
 				player.translate(player.position.right(camRot).multiply(-10f*mul));
-//				player.update();
-				cam = player.position;
-				x -= 10;
 			} if(keys[KeyEvent.VK_D] && keyDown){
-//				Object3d.translateArray(objects, Vec3.RIGHT.multiply(10*mul));
 				player.translate(player.position.right(camRot).multiply(10f*mul));
-//				player.update();
-				cam = player.position;
-				x += 10;
 			}
-//			if(keys[KeyEvent.VK_Q] && keyDown){
-//				camRot.y -= 1;
-//				cam.rotate("y", player.position, -1);
-//				player.rotate("y", player.position, -1);
-//			} if(keys[KeyEvent.VK_E] && keyDown){
-//				camRot.y += 1;
-//				cam.rotate("y", player.position, 1);
-//				player.rotate("y", player.position, 1);
-//			}
 			if(keys[KeyEvent.VK_SPACE] && keyDown && /*toggled*/ grounded){
 				Vec3 jumpVec = new Vec3(0, -20, 0);
 				player.setVelocity(jumpVec.multiply(rate));
-//				player.update();
-//				Object3d.addVelocityArray(objects, jumpVec.multiply(rate));
 			}
 			if(!updated){
 				player.update();
 			}
-			cam.y = (int) player.position.y - 150;
 			
 			if(keys[KeyEvent.VK_M]){
 				Main.save();
@@ -396,8 +347,8 @@ public class Draw implements Serializable{
 			int distY = H/2 - mouseY;
 			float sesitiv = 0.1f;
 			camRot.y -= distX*rate;
-			cam.rotate("y", player.position, -distX*rate*sesitiv);
-			player.rotate("y", player.position, -distX*rate);
+//			player.rotate("y", player.position, -distX*rate);
+			camRot.x += distY*rate*1;
 			try {
 			    Robot robot = new Robot();
 			    robot.mouseMove(W/2, H/2);
