@@ -64,7 +64,7 @@ public class Draw implements Serializable{
 		for(int j=0; j<width; j++){
 			for(int i=objNum-1; i>=0; i--){
 				Block b = new Block(CENTER);
-				b.translate(new Vec3(Block.size*j, 200, Block.size*i));
+				b.translate(new Vec3(Block.size*j, Block.size + 200, Block.size*i));
 				objects.add(b);
 			}
 		}
@@ -179,8 +179,9 @@ public class Draw implements Serializable{
 			if(player.position.z>=z+W/2){
 				rx = (int) (( (x-player.position.x) * ( W / 2 ) ) / (player.position.z -( z + ( W / 2 )))+W/2);
 			}
+			y += Block.size*2;
 			int ry = (int) (( (y-player.position.y) * ( H / 2 ) ) / ( z + ( H / 2 ) - player.position.z)+H/2);
-			ry += H/2-50;
+			ry += H/2-Block.size*3;
 			if(player.position.z>=z+H/2){
 				ry = (int) (( (y-player.position.y) * ( H / 2 ) ) / -( z + ( H / 2 ) - player.position.z)+H/2-y);
 			}
@@ -286,7 +287,7 @@ public class Draw implements Serializable{
 			if(keys[KeyEvent.VK_SHIFT] || keys[KeyEvent.VK_W] && ticks > 0 || keys[KeyEvent.VK_R]){
 				mul = 2;
 			}
-			mul*=rate;
+			mul*=rate*Block.size/50;
 			if(keys[KeyEvent.VK_W] && keyDown){
 				player.translate(player.position.forward(camRot).multiply(10*mul));
 			} if(keys[KeyEvent.VK_S] && keyDown){
