@@ -61,9 +61,9 @@ public class Draw implements Serializable{
 	}
 	void init(){
 		for(int i=objNum-1; i>=0; i--){
-			RectPrism p = new RectPrism(CENTER, 250, 10, 250);
-			p.translate(new Vec3(0, 200, 500*i));
-			objects.add(p);
+			Block b = new Block(CENTER);
+			b.translate(new Vec3(0, 200, 500*i));
+			objects.add(b);
 		}
 		load();
 	}
@@ -103,28 +103,13 @@ public class Draw implements Serializable{
 			arrays = sortFaces(arrays);
 			
 			g.setColor(Color.black);
-			for(int j=0; j<objects.size(); j++){
-				Object3d obj = objects.get(j);
-				for (int i = 0; i < obj.size(); i++) {
-					Vec3 vec = (Vec3) obj.get(i);
-					drawPoint(vec, g);
-					char[] charAr = {Integer.toString(i).charAt(0)};
-					int[] coords = getXY(vec);
-					g.drawChars(charAr, 0, 1, coords[0], coords[1]);
-				}
-			}
 			draw3d(arrays, g);
 
 			Object3d obj = player;
 			for (int i = 0; i < obj.size(); i++) {
 				Vec3 vec = (Vec3) obj.get(i);
-				drawPoint(vec, g);
-				char[] charAr = {Integer.toString(i).charAt(0)};
-				int[] coords = getXY(vec);
-				g.drawChars(charAr, 0, 1, coords[0], coords[1]);
+				drawPoint(vec,g);
 			}
-			drawPoint(player.position.forward(camRot).add(player.position),g);
-			drawPoint(player.position.right(camRot).add(player.position),g);
 		}
 		private int[][] getArray(ArrayList<Vec3> vecs, int[] array){
 			int[][] rArray = new int[2][array.length];
@@ -170,21 +155,31 @@ public class Draw implements Serializable{
 			int y = (int) point.y;
 			int z = (int) point.z;
 			
-			int average_len = H/2;
-			int ry;
-			if(player.position.z >= z+average_len){
-				ry=(int) (W-player.position.y + y);
-			}else{
-				ry = (int) (((y-player.position.y) * ( average_len) ) / ( z+ ( average_len) -player.position.z)) + H/2;
+//			int average_len = H/2;
+//			int ry;
+//			if(Vec3.angle(player.position.forward(camRot).add(player.position), player.position, point) >= 90){
+//				ry = (int) (y-player.position.y + H - 50);
+//				System.out.println("fila");
+//			}else{
+//				ry = (int) (((y-player.position.y) * ( average_len) ) / ( z+ ( average_len) -player.position.z)) + H/2;
+//				ry += H/2-50;
+//			}
+//			
+//			average_len = W/2;
+//			int rx;
+//			if(player.position.z >= z+average_len){
+//				rx = (int) (((x-player.position.x) * ( average_len ) ) / (150)) + W/2;
+//			}else{
+//				rx= (int) (((x-player.position.x) * ( average_len ) ) / ( z + ( W/2) -player.position.z)) + W/2;
+//			}
+			int rx = (int) (( (x-player.position.x) * ( W / 2 ) ) / ( z + ( W / 2 ) - player.position.z)+W/2);
+			if(player.position.z>=z+W/2){
+				rx = (int) (( (x-player.position.x) * ( W / 2 ) ) / (player.position.z -( z + ( W / 2 )))+W/2);
 			}
-			ry += W/2-100;
-			
-			average_len = W/2;
-			int rx;
-			if(player.position.z >= z+average_len){
-				rx = (int) (((x-player.position.x) * ( average_len ) ) / (150)) + W/2;
-			}else{
-				rx= (int) (((x-player.position.x) * ( average_len ) ) / ( z + ( W/2) -player.position.z)) + W/2;
+			int ry = (int) (( (y-player.position.y) * ( H / 2 ) ) / ( z + ( H / 2 ) - player.position.z)+H/2);
+			ry += H/2-50;
+			if(player.position.z>=z+H/2){
+				ry = (int) (( (y-player.position.y) * ( H / 2 ) ) / -( z + ( H / 2 ) - player.position.z)+H/2-y);
 			}
 			int[] i = {rx, ry};
 			return i;
@@ -315,10 +310,11 @@ public class Draw implements Serializable{
 			int mouseY = MouseInfo.getPointerInfo().getLocation().y;
 			int distX = W/2 - mouseX;
 			int distY = H/2 - mouseY;
-			float sesitiv = 0.1f;
+			if(distX>=14){
+				distX=14;
+			}
 			camRot.y -= distX*rate;
-//			player.rotate("y", player.position, -distX*rate);
-			camRot.x += distY*rate*1;
+			camRot.x += distY*rate;
 			try {
 			    Robot robot = new Robot();
 			    robot.mouseMove(W/2, H/2);

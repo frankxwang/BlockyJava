@@ -136,4 +136,20 @@ public class Vec3 implements Serializable{
 	public void print(){
 		System.out.println("X: " + x + " Y: " + y + " Z: " + z);
 	}
+	public static float angle(Vec3 a, Vec3 b, Vec3 c){
+		Vec3 ab = b.add(a.multiply(-1));
+		Vec3 bc = c.add(b.multiply(-1));
+		float dot = dot(ab,bc);
+		float len1 = ab.length();
+		float len2 = bc.length();
+		float num = dot/(len1*len2);
+		num = (float) Math.toRadians(num);
+		return (float) Math.toDegrees(Math.acos(num));
+	}
+	public static float dot(Vec3 a, Vec3 b){
+		return (a.x*b.x) + (a.y*b.y) + (a.z*b.z);
+	}
+	public float length(){
+		return (float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
+	}
 }
