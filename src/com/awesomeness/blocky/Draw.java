@@ -109,10 +109,10 @@ public class Draw implements Serializable{
 			draw3d(arrays, g);
 
 			Object3d obj = player;
-			for (int i = 0; i < obj.size(); i++) {
-				Vec3 vec = (Vec3) obj.get(i);
-				drawPoint(vec,g);
-			}
+//			for (int i = 0; i < obj.size(); i++) {
+//				Vec3 vec = (Vec3) obj.get(i);
+//				drawPoint(vec,g);
+//			}
 		}
 		private int[][] getArray(ArrayList<Vec3> vecs, int[] array){
 			int[][] rArray = new int[2][array.length];
@@ -199,9 +199,9 @@ public class Draw implements Serializable{
 				vec2.x = ((Vec3)obj.get(arrays[i][2])).x;
 				vec2.y = ((Vec3)obj.get(arrays[i][2])).y;
 				vec2.z = ((Vec3)obj.get(arrays[i][2])).z;
-				Vec3.midpoint(vec1, vec2);
+				vec1 = Vec3.midpoint(vec1, vec2);
 				
-				VecsMidZ[i]=(Integer)(int) vec1.z;
+				VecsMidZ[i]=(Integer)(int) Vec3.distance(player.position, vec1);
 //				VecsMidZ[i] = ((int) ((Vec3)(vecs.get(iArray[0]))).z);
 				VecsMidZ[i] *= 10;
 				VecsMidZ[i] += i;
@@ -268,6 +268,15 @@ public class Draw implements Serializable{
 				ticks -= rate;
 			}
 			panel.requestFocus();
+//			Collections.sort(objects, (Object3d o1,Object3d o2) -> ((Float)(Vec3.distance(player,position, o1.position).compareTo((Float)(Vec3.distance(player,position, o2.position))))));
+			Collections.sort(objects, new Comparator<Object3d>(){
+			  public int compare(Object3d o1, Object3d o2){
+			    return (int) -(dist(o1)-dist(o2));
+			  }
+			  private float dist(Object3d o){
+				  return Vec3.distance(player.position, o.position);
+			  }
+			});
 //			Object3d.addVelocityArray(objects, new Vec3(0, -1, 0).multiply(0.6f*rate));//gravity happens to be 0.32 units be second
 			player.addVelocity(new Vec3(0, 1, 0).multiply(0.6f*rate));
 			player.boxCollider.isTouchingArrayGrav(objects);
