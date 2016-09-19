@@ -278,7 +278,7 @@ public class Draw implements Serializable{
 			  }
 			});
 //			Object3d.addVelocityArray(objects, new Vec3(0, -1, 0).multiply(0.6f*rate));//gravity happens to be 0.32 units be second
-			player.addVelocity(new Vec3(0, 1, 0).multiply(0.6f*rate));
+			player.addVelocity(new Vec3(0, 1, 0).multiply(1f*rate));
 			player.boxCollider.isTouchingArrayGrav(objects);
 			Object3d.updateArray(objects);
 			boolean updated = false;
