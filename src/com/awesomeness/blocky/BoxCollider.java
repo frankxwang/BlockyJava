@@ -19,6 +19,7 @@ public class BoxCollider implements Serializable{
 	public boolean isTouching(BoxCollider b){
 		Vec3 B1 = this.vec1;
 		Vec3 B2 = this.vec2;
+		B2 = Vec3.midpoint(B1, B2);
 		
 		Vec3 A1 = b.vec1;
 		Vec3 A2 = b.vec2;
