@@ -27,6 +27,7 @@ public class Draw implements Serializable{
 	public static boolean grounded = false;
 	public static boolean toggled = false;
 	static int objNum = 8;
+	static int width = 10;
 	public static float frameRate = 10;
 	public static float rate = frameRate/30;
 	static boolean[] keys;
@@ -60,10 +61,12 @@ public class Draw implements Serializable{
 		t.schedule(new DoStuff(), 0, (long) frameRate);
 	}
 	void init(){
-		for(int i=objNum-1; i>=0; i--){
-			Block b = new Block(CENTER);
-			b.translate(new Vec3(0, 200, 500*i));
-			objects.add(b);
+		for(int j=0; j<width; j++){
+			for(int i=objNum-1; i>=0; i--){
+				Block b = new Block(CENTER);
+				b.translate(new Vec3(Block.size*j, 200, Block.size*i));
+				objects.add(b);
+			}
 		}
 		load();
 	}
@@ -148,8 +151,8 @@ public class Draw implements Serializable{
 		}
 		private int[] getXY(Vec3 vec){
 			Vec3 point = vec.clone();
-			point.rotate("x", new Vec3(player.position.x, player.position.y, player.position.z), -camRot.x);
 			point.rotate("y", new Vec3(player.position.x, player.position.y, player.position.z), -camRot.y);
+			point.rotate("x", new Vec3(player.position.x, player.position.y, player.position.z), -camRot.x);
 			point.rotate("z", new Vec3(player.position.x, player.position.y, player.position.z), -camRot.z);
 			int x = (int) point.x;
 			int y = (int) point.y;
