@@ -276,9 +276,11 @@ public class Draw implements Serializable{
 				  return Vec3.distance(player.position, o.position);
 			  }
 			});
-			Object3d hit = Object3d.raycast(objects, player.position, camRot, 10*Block.size);
-			if(hit!=null){
-				hit.translate(Vec3.UP.multiply(Block.size*2));
+			if(keys[KeyEvent.VK_Q]){
+				Object3d hit = Object3d.raycast(objects, player.position, camRot, 10*Block.size);
+				if(hit!=null){
+					hit.translate(Vec3.UP.multiply(Block.size*2));
+				}
 			}
 //			Object3d.addVelocityArray(objects, new Vec3(0, -1, 0).multiply(0.6f*rate));//gravity happens to be 0.32 units be second
 			player.addVelocity(new Vec3(0, 1, 0).multiply(1f*rate));
