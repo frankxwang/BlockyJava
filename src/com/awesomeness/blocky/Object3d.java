@@ -1,6 +1,7 @@
 package com.awesomeness.blocky;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Object3d implements Serializable{
 	
@@ -138,5 +139,30 @@ public class Object3d implements Serializable{
 		for (int i = 0; i < objs.size(); i++) {
 			((Object3d) objs.get(i)).setVelocityY(v);
 		}
+	}
+	public static Object3d raycast(ArrayList<Object3d> objs, Vec3 origin, Vec3 rot, float dist){
+		Vec3 dir = origin.add(origin.forward(rot).multiply(Block.size));
+		Vec3 forward = Draw.player.position.forward(Main.d.camRot);
+		float angle = Vec3.angle(dir, origin, forward);
+		for(int i=0; i<objs.size(); i++){
+			Object3d block = objs.get(i);
+			if(Math.abs(Vec3.angle(block.position, origin, forward) - angle) < 10
+					&& block.position.distance(origin)<=dist){
+				System.out.println(i);
+				return block;
+			}
+		}
+//		Iterator it = objs.iterator();
+//		int num = 0;
+//		while(it.hasNext()){
+//			Object3d block = (Object3d)it.next();
+//			if(Math.abs(Vec3.angle(block.position, origin, forward) - angle) < 10
+//					&& block.position.distance(origin)<=dist){
+//				System.out.println(num);
+//				return objs.get(num);
+//			}
+//			num++;
+//		}
+		return null;
 	}
 }

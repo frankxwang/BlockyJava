@@ -54,8 +54,6 @@ public class Draw implements Serializable{
 		frame.setLayout(new BorderLayout());
 		frame.add(panel, BorderLayout.CENTER);
 		
-		(panel).paintComponent(panel.getGraphics());
-		
 		frame.pack();
 		Timer t = new Timer();
 		t.schedule(new DoStuff(), 0, (long) frameRate);
@@ -109,10 +107,10 @@ public class Draw implements Serializable{
 			draw3d(arrays, g);
 
 			Object3d obj = player;
-//			for (int i = 0; i < obj.size(); i++) {
-//				Vec3 vec = (Vec3) obj.get(i);
-//				drawPoint(vec,g);
-//			}
+			for (int i = 0; i < obj.size(); i++) {
+				Vec3 vec = (Vec3) obj.get(i);
+				drawPoint(vec,g);
+			}
 		}
 		private int[][] getArray(ArrayList<Vec3> vecs, int[] array){
 			int[][] rArray = new int[2][array.length];
@@ -278,6 +276,10 @@ public class Draw implements Serializable{
 				  return Vec3.distance(player.position, o.position);
 			  }
 			});
+			Object3d hit = Object3d.raycast(objects, player.position, camRot, 10*Block.size);
+			if(hit!=null){
+				hit.translate(Vec3.UP.multiply(Block.size*2));
+			}
 //			Object3d.addVelocityArray(objects, new Vec3(0, -1, 0).multiply(0.6f*rate));//gravity happens to be 0.32 units be second
 			player.addVelocity(new Vec3(0, 1, 0).multiply(1f*rate));
 			player.boxCollider.isTouchingArrayGrav(objects);
