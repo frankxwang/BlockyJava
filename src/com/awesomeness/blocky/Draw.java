@@ -21,7 +21,7 @@ public class Draw implements Serializable{
 	public static final Vec3 CENTER = new Vec3(W/2, H/2, 0);
 	public FrameDraw panel;
 	public static JFrame frame;
-	public static Object3d player;
+	public Object3d player;
 //	public BoxCollider player.boxCollider;
 	public static boolean jump = false;
 	public static boolean grounded = false;

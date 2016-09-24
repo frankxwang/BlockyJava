@@ -40,7 +40,7 @@ public class BoxCollider implements Serializable{
 		for(BoxCollider b:array){
 			if(isTouching(b)){
 				if(!Draw.jump){
-					Draw.player.setVelocityY(0);
+					Main.d.player.setVelocityY(0);
 					Draw.grounded = true;
 					break;
 //					Draw.toggled = true;
