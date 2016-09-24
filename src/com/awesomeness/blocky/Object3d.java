@@ -20,7 +20,7 @@ public class Object3d implements Serializable{
 	}
 	
 	public void setBox(){
-		position = Vec3.midpoint((Vec3) vecs.get(0).clone(),(Vec3) vecs.get(4).clone());
+		position = Vec3.midpoint((Vec3) vecs.get(0).clone(),(Vec3) vecs.get(5).clone());
 		boxCollider = new BoxCollider((Vec3)vecs.get(1), (Vec3)vecs.get(6));
 	}
 	

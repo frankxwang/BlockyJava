@@ -31,16 +31,16 @@ public class Draw implements Serializable{
 	public static float frameRate = 10;
 	public static float rate = frameRate/30;
 	static boolean[] keys;
+	static boolean[] mouse;
 	void load(){
 		try {
 		    Robot robot = new Robot();
 		    robot.mouseMove(W/2, H/2);
 		} catch (AWTException e) {
 		}
-		for(int i = 0; i < 1000; i ++){
-			keys = new boolean[i];
-		}
-		player = new RectPrism(CENTER.add(new Vec3(0, 50, 0)), 50, 50, 50);
+		keys = new boolean[KeyEvent.KEY_LAST];
+		mouse = new boolean[3];
+		player = new RectPrism(CENTER.add(new Vec3(0, 50, 0)), Block.size/2, Block.size*2, Block.size/2);
 //		player.boxCollider = new BoxCollider(CENTER.add(new Vec3(0, 50, 0)), CENTER.add(new Vec3(1, 50, 1)));
 //		player.boxCollider = player.boxCollider;
 		frame = new JFrame();
@@ -66,6 +66,8 @@ public class Draw implements Serializable{
 				objects.add(b);
 			}
 		}
+		Block top = new Block(CENTER.add(Vec3.UP.multiply(10*Block.size)));
+		objects.add(top);
 		load();
 	}
 	
@@ -86,10 +88,11 @@ public class Draw implements Serializable{
 	}
 	
 	@SuppressWarnings("serial")
-	class FrameDraw extends JPanel implements KeyListener{
+	class FrameDraw extends JPanel implements KeyListener, MouseListener{
 		public static final long MAX_DIST = 1l;
 		FrameDraw(){
 			addKeyListener(this);
+			addMouseListener(this);
 		}
 		protected void paintComponent(Graphics g) {
 			update();
@@ -178,7 +181,6 @@ public class Draw implements Serializable{
 			if(player.position.z>=z+W/2){
 				rx = (int) (( (x-player.position.x) * ( W / 2 ) ) / (player.position.z -( z + ( W / 2 )))+W/2);
 			}
-			y += Block.size*2;
 			int ry = (int) (( (y-player.position.y) * ( H / 2 ) ) / ( z + ( H / 2 ) - player.position.z)+H/2);
 			ry += H/2-Block.size*3;
 			if(player.position.z>=z+H/2){
@@ -277,10 +279,9 @@ public class Draw implements Serializable{
 				  return Vec3.distance(player.position, o.position);
 			  }
 			});
-			if(keys[KeyEvent.VK_Q]){
+			if(mouse[0]){
 				Object3d hit = Object3d.raycast(objects, player.position, camRot, 10);
 				if(hit!=null){
-					System.out.println("h");
 					hit.translate(Vec3.UP.multiply(Block.size*1));
 				}
 			}
@@ -348,5 +349,19 @@ public class Draw implements Serializable{
 			} catch (AWTException e) {
 			}
 		}
+		@Override
+		public void mouseClicked(MouseEvent e) {}
+		@Override
+		public void mousePressed(MouseEvent e) {
+			mouse[e.getButton()-1]=true;
+		}
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			mouse[e.getButton()-1]=false;
+		}
+		@Override
+		public void mouseEntered(MouseEvent e) {}
+		@Override
+		public void mouseExited(MouseEvent e) {}
 	}
 }
