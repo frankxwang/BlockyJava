@@ -95,7 +95,7 @@ public class Vec3 implements Serializable{
 		Vec3 rVec = new Vec3(0,0,0);
 		rVec.x += Math.sin(rot.y);
 		rVec.z += Math.cos(rot.y);
-		rVec.y -= Math.sin(rot.x);
+		rVec.y -= Math.tan(rot.x);
 		return rVec;
 	}
 	

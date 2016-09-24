@@ -172,18 +172,18 @@ public class Object3d implements Serializable{
 		return null;
 	}
 	public static Vec3 raycastVec(ArrayList<Object3d> objs, Vec3 origin, Vec3 rot, float dist){
+		Vec3 o = origin.clone();
 		Vec3 dir = Vec3.forward(rot).multiply(Block.size);
-		return origin.clone().add(dir);
-//		for(int j=0; j<dist; j++){
-//			BoxCollider point = new BoxCollider(origin, origin.add(new Vec3(1,1,1)));
-//			for(int i=0; i<objs.size(); i++){
-//				Object3d block = objs.get(i);
-//				if(point.isTouching(block.boxCollider)){
-//					return origin;
-//				}
-//			}
-//			origin.translate(dir);
-//		}
-//		return origin;
+		for(int j=0; j<dist; j++){
+			BoxCollider point = new BoxCollider(o, o.add(new Vec3(1,1,1)));
+			for(int i=0; i<objs.size(); i++){
+				Object3d block = objs.get(i);
+				if(point.isTouching(block.boxCollider)){
+					return o;
+				}
+			}
+			o.translate(dir);
+		}
+		return o;
 	}
 }
