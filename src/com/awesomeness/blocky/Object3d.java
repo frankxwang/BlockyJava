@@ -146,9 +146,8 @@ public class Object3d implements Serializable{
 		float angle = Vec3.angle(dir, origin, forward);
 		for(int i=0; i<objs.size(); i++){
 			Object3d block = objs.get(i);
-			if(Math.abs(Vec3.angle(block.position, origin, forward) - angle) < 10
+			if(Math.abs(Vec3.angle(block.position, origin, forward) - angle) < 0.07
 					&& block.position.distance(origin)<=dist){
-				System.out.println(i);
 				return block;
 			}
 		}

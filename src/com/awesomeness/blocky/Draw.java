@@ -279,7 +279,7 @@ public class Draw implements Serializable{
 			if(keys[KeyEvent.VK_Q]){
 				Object3d hit = Object3d.raycast(objects, player.position, camRot, 10*Block.size);
 				if(hit!=null){
-					hit.translate(Vec3.UP.multiply(Block.size*2));
+					hit.translate(Vec3.UP.multiply(Block.size*1));
 				}
 			}
 //			Object3d.addVelocityArray(objects, new Vec3(0, -1, 0).multiply(0.6f*rate));//gravity happens to be 0.32 units be second
