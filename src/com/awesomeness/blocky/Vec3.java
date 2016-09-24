@@ -87,7 +87,7 @@ public class Vec3 implements Serializable{
 		return vec3;
 	}
 	
-	public Vec3 forward(Vec3 rotation){
+	public static Vec3 forward(Vec3 rotation){
 		Vec3 rot = rotation.clone();
 		rot.x = (float) Math.toRadians(rot.x);
 		rot.y = (float) Math.toRadians(rot.y);
@@ -95,10 +95,11 @@ public class Vec3 implements Serializable{
 		Vec3 rVec = new Vec3(0,0,0);
 		rVec.x += Math.sin(rot.y);
 		rVec.z += Math.cos(rot.y);
+		rVec.y -= Math.sin(rot.x);
 		return rVec;
 	}
 	
-	public Vec3 right(Vec3 rotation){
+	public static Vec3 right(Vec3 rotation){
 		Vec3 rot = rotation.clone();
 		rot.x = (float) Math.toRadians(rot.x);
 		rot.y = (float) Math.toRadians(rot.y);

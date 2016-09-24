@@ -111,6 +111,7 @@ public class Draw implements Serializable{
 				Vec3 vec = (Vec3) obj.get(i);
 				drawPoint(vec,g);
 			}
+			drawPoint(Object3d.raycastVec(objects, player.position, camRot, 10), g);
 		}
 		private int[][] getArray(ArrayList<Vec3> vecs, int[] array){
 			int[][] rArray = new int[2][array.length];
@@ -277,8 +278,9 @@ public class Draw implements Serializable{
 			  }
 			});
 			if(keys[KeyEvent.VK_Q]){
-				Object3d hit = Object3d.raycast(objects, player.position, camRot, 10*Block.size);
+				Object3d hit = Object3d.raycast(objects, player.position, camRot, 10);
 				if(hit!=null){
+					System.out.println("h");
 					hit.translate(Vec3.UP.multiply(Block.size*1));
 				}
 			}
@@ -293,16 +295,24 @@ public class Draw implements Serializable{
 			}
 			mul*=rate*Block.size/50;
 			if(keys[KeyEvent.VK_W] && keyDown){
-				player.translate(player.position.forward(camRot).multiply(10*mul));
+				Vec3 val = Vec3.forward(camRot).multiply(10*mul);
+				val.y = 0;
+				player.translate(val);
 			} if(keys[KeyEvent.VK_S] && keyDown){
-				player.translate(player.position.forward(camRot).multiply(-10*mul));
+				Vec3 val = Vec3.forward(camRot).multiply(-10*mul);
+				val.y = 0;
+				player.translate(val);
 			} if(keys[KeyEvent.VK_A] && keyDown){
-				player.translate(player.position.right(camRot).multiply(-10f*mul));
+				Vec3 val = Vec3.right(camRot).multiply(-10f*mul);
+				val.y = 0;
+				player.translate(val);
 			} if(keys[KeyEvent.VK_D] && keyDown){
-				player.translate(player.position.right(camRot).multiply(10f*mul));
+				Vec3 val = Vec3.right(camRot).multiply(10f*mul);
+				val.y = 0;
+				player.translate(val);
 			}
 			if(keys[KeyEvent.VK_SPACE] && keyDown && /*toggled*/ grounded){
-				Vec3 jumpVec = new Vec3(0, -20, 0);
+				Vec3 jumpVec = new Vec3(0, -30, 0);
 				player.setVelocity(jumpVec.multiply(rate));
 			}
 			if(!updated){

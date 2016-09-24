@@ -141,15 +141,22 @@ public class Object3d implements Serializable{
 		}
 	}
 	public static Object3d raycast(ArrayList<Object3d> objs, Vec3 origin, Vec3 rot, float dist){
-		Vec3 dir = origin.add(origin.forward(rot).multiply(Block.size));
-		Vec3 forward = Draw.player.position.forward(Main.d.camRot);
-		float angle = Vec3.angle(dir, origin, forward);
-		for(int i=0; i<objs.size(); i++){
-			Object3d block = objs.get(i);
-			if(Math.abs(Vec3.angle(block.position, origin, forward) - angle) < 0.07
-					&& block.position.distance(origin)<=dist){
-				return block;
+		Vec3 dir = Vec3.forward(rot).multiply(Block.size);
+//		Vec3 forward = Draw.player.position.forward(Main.d.camRot);
+//		float angle = Vec3.angle(dir, origin, forward);
+		for(int j=0; j<dist; j++){
+			BoxCollider point = new BoxCollider(origin, origin.add(new Vec3(1,1,1)));
+			for(int i=0; i<objs.size(); i++){
+				Object3d block = objs.get(i);
+				if(point.isTouching(block.boxCollider)){
+					return block;
+				}
+	//			if(Math.abs(Vec3.angle(block.position, origin, forward) - angle) < 0.07
+	//					&& block.position.distance(origin)<=dist){
+	//				return block;
+	//			}
 			}
+			origin.translate(dir);
 		}
 //		Iterator it = objs.iterator();
 //		int num = 0;
@@ -163,5 +170,20 @@ public class Object3d implements Serializable{
 //			num++;
 //		}
 		return null;
+	}
+	public static Vec3 raycastVec(ArrayList<Object3d> objs, Vec3 origin, Vec3 rot, float dist){
+		Vec3 dir = Vec3.forward(rot).multiply(Block.size);
+		return origin.clone().add(dir);
+//		for(int j=0; j<dist; j++){
+//			BoxCollider point = new BoxCollider(origin, origin.add(new Vec3(1,1,1)));
+//			for(int i=0; i<objs.size(); i++){
+//				Object3d block = objs.get(i);
+//				if(point.isTouching(block.boxCollider)){
+//					return origin;
+//				}
+//			}
+//			origin.translate(dir);
+//		}
+//		return origin;
 	}
 }
