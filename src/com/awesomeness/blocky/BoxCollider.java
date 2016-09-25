@@ -17,15 +17,24 @@ public class BoxCollider implements Serializable{
 	}
 	
 	public boolean isTouching(BoxCollider b){
-		Vec3 B1 = this.vec1;
-		Vec3 B2 = this.vec2;
+		Vec3 B1 = this.vec1.clone();
+		Vec3 B2 = this.vec2.clone();
+		Vec3 B3 = Vec3.midpoint(B1, B2);
 		
-		Vec3 A1 = b.vec1;
-		Vec3 A2 = b.vec2;
+		Vec3 A1 = b.vec1.clone();
+		Vec3 A2 = b.vec2.clone();
 		
-		if(((A1.x<=B2.x && A2.x>=B2.x) || (A1.x>=B2.x && A2.x<=B2.x)) &&
-			((A1.y<=B2.y && A2.y>=B2.y) || (A1.y>=B2.y && A2.y<=B2.y)) &&
-			((A1.z<=B2.z && A2.z>=B2.z) || (A1.z>=B2.z && A2.z<=B2.z))){
+		if(((A1.x<=B3.x && A2.x>=B3.x) || (A1.x>=B3.x && A2.x<=B3.x)) &&
+			((A1.y<=B3.y && A2.y>=B3.y) || (A1.y>=B3.y && A2.y<=B3.y)) &&
+			((A1.z<=B3.z && A2.z>=B3.z) || (A1.z>=B3.z && A2.z<=B3.z))){
+			return true;
+		}
+		
+		Vec3 A3 = Vec3.midpoint(A1, A2);
+		
+		if(((B1.x<=A3.x && B2.x>=A3.x) || (B1.x>=A3.x && B2.x<=A3.x)) &&
+				((B1.y<=A3.y && B2.y>=A3.y) || (B1.y>=A3.y && B2.y<=A3.y)) &&
+				((B1.z<=A3.z && B2.z>=A3.z) || (B1.z>=A3.z && B2.z<=A3.z))){
 			return true;
 		}
 		return false;
@@ -39,7 +48,7 @@ public class BoxCollider implements Serializable{
 		for(BoxCollider b:array){
 			if(isTouching(b)){
 				if(!Draw.jump){
-					Draw.player.setVelocityY(0);
+					Main.d.player.setVelocityY(0);
 					Draw.grounded = true;
 					break;
 //					Draw.toggled = true;

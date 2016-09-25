@@ -27,9 +27,6 @@ public class Main {
 			d = draw;
 			d.load();
 			os.close();
-			d.cam.x = (int) d.player.position.x;
-			d.cam.y = (int) d.player.position.y - 150;
-			d.cam.z = (int) d.player.position.z;
 			draw.objects.get(0).get(0).print();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -39,9 +36,6 @@ public class Main {
 		d.frame.setVisible(false);
 		d.frame.dispose();
 		d = new Draw();
-		d.cam.x = (int) d.player.position.x;
-		d.cam.y = (int) d.player.position.y - 150;
-		d.cam.z = (int) d.player.position.z;
 	}
 }
 //"X: 325.0 Y: -6289.2095 Z: 2981.6646";

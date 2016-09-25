@@ -13,80 +13,61 @@ public class Draw implements Serializable{
 	static final long serialVersionUID = -7298352464830308761L;
 	boolean keyDown = false;
 	float mul = 1;
-	public int score = -1;
-	public static int xRot = 0;
-	public static int yRot = 0;
-	public static int zRot = 0;
 	public static String rotMode = "x";
 	public ArrayList<Object3d> objects = new ArrayList<Object3d>();
 	public static int W = 700;
 	public static int H = 700;
-	public static Vec3 cam = new Vec3(W/2, H/2 , 0);
 	public Vec3 camRot = new Vec3(0,0,0);
-	public static int x = 0;
-	public static int y = 200;
-	public static int z = 0;
 	public static final Vec3 CENTER = new Vec3(W/2, H/2, 0);
 	public FrameDraw panel;
-	public JLabel scoreLabel;
 	public static JFrame frame;
-	public static Object3d player;
-//	public BoxCollider playerBox;
+	public Object3d player;
+//	public BoxCollider player.boxCollider;
 	public static boolean jump = false;
 	public static boolean grounded = false;
 	public static boolean toggled = false;
 	static int objNum = 8;
+	static int width = 10;
 	public static float frameRate = 10;
 	public static float rate = frameRate/30;
 	static boolean[] keys;
-	transient BufferedImage cursorImg;
-	transient Cursor blankCursor;
+	static boolean[] mouse;
 	void load(){
 		try {
 		    Robot robot = new Robot();
 		    robot.mouseMove(W/2, H/2);
 		} catch (AWTException e) {
 		}
-		for(int i = 0; i < 1000; i ++){
-			keys = new boolean[i];
-		}
-		player = new RectPrism(CENTER.add(new Vec3(0, 50, 0)), 50, 50, 50);
-//		playerBox = new BoxCollider(CENTER.add(new Vec3(0, 50, 0)), CENTER.add(new Vec3(1, 50, 1)));
-//		player.boxCollider = playerBox;
+		keys = new boolean[KeyEvent.KEY_LAST];
+		mouse = new boolean[3];
+		player = new RectPrism(CENTER.add(new Vec3(0, 50, 0)), Block.size/2, Block.size*2, Block.size/2);
+//		player.boxCollider = new BoxCollider(CENTER.add(new Vec3(0, 50, 0)), CENTER.add(new Vec3(1, 50, 1)));
+//		player.boxCollider = player.boxCollider;
 		frame = new JFrame();
-		
-		if (score >= 0) {
-			scoreLabel = new JLabel(score + "");
-		} else {
-			scoreLabel = new JLabel("0");
-		}
-		scoreLabel.setSize(new Dimension(100, 100));
-		scoreLabel.setHorizontalAlignment((int) JLabel.CENTER_ALIGNMENT);
-		scoreLabel.setFont(new Font("Arial", 50, 50));
-		scoreLabel.setOpaque(true);
 		
 		panel = new FrameDraw();
 		panel.setSize(new Dimension(W, H));
 		
-		frame.setPreferredSize(new Dimension(W, H + 50));
+		frame.setPreferredSize(new Dimension(W, H));
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
-		frame.add(scoreLabel, BorderLayout.NORTH);
 		frame.add(panel, BorderLayout.CENTER);
-		
-		(panel).paintComponent(panel.getGraphics());
 		
 		frame.pack();
 		Timer t = new Timer();
 		t.schedule(new DoStuff(), 0, (long) frameRate);
 	}
 	void init(){
-		for(int i=objNum-1; i>=0; i--){
-			RectPrism p = new RectPrism(CENTER, 250, 10, 250);
-			p.translate(new Vec3(0, 200, 500*i));
-			objects.add(p);
+		for(int j=0; j<width; j++){
+			for(int i=objNum-1; i>=0; i--){
+				Block b = new Block(CENTER);
+				b.translate(new Vec3(Block.size*j, Block.size + 200, Block.size*i));
+				objects.add(b);
+			}
 		}
+		Block top = new Block(CENTER.add(Vec3.UP.multiply(10*Block.size)));
+		objects.add(top);
 		load();
 	}
 	
@@ -107,10 +88,11 @@ public class Draw implements Serializable{
 	}
 	
 	@SuppressWarnings("serial")
-	class FrameDraw extends JPanel implements KeyListener{
+	class FrameDraw extends JPanel implements KeyListener, MouseListener{
 		public static final long MAX_DIST = 1l;
 		FrameDraw(){
 			addKeyListener(this);
+			addMouseListener(this);
 		}
 		protected void paintComponent(Graphics g) {
 			update();
@@ -125,28 +107,14 @@ public class Draw implements Serializable{
 			arrays = sortFaces(arrays);
 			
 			g.setColor(Color.black);
-			for(int j=0; j<objects.size(); j++){
-				Object3d obj = objects.get(j);
-				for (int i = 0; i < obj.size(); i++) {
-					Vec3 vec = (Vec3) obj.get(i);
-					drawPoint(vec, g);
-					char[] charAr = {Integer.toString(i).charAt(0)};
-					int[] coords = getXY(vec);
-					g.drawChars(charAr, 0, 1, coords[0], coords[1]);
-				}
-			}
 			draw3d(arrays, g);
 
 			Object3d obj = player;
 			for (int i = 0; i < obj.size(); i++) {
 				Vec3 vec = (Vec3) obj.get(i);
-				drawPoint(vec, g);
-				char[] charAr = {Integer.toString(i).charAt(0)};
-				int[] coords = getXY(vec);
-				g.drawChars(charAr, 0, 1, coords[0], coords[1]);
+				drawPoint(vec,g);
 			}
-			drawPoint(player.position.forward(camRot).add(player.position),g);
-			drawPoint(player.position.right(camRot).add(player.position),g);
+			drawPoint(Object3d.raycastVec(objects, player.position, camRot, 10), g);
 		}
 		private int[][] getArray(ArrayList<Vec3> vecs, int[] array){
 			int[][] rArray = new int[2][array.length];
@@ -185,27 +153,20 @@ public class Draw implements Serializable{
 		}
 		private int[] getXY(Vec3 vec){
 			Vec3 point = vec.clone();
-			point.rotate("x", new Vec3(cam.x, cam.y, cam.z), -camRot.x);
-			point.rotate("y", new Vec3(cam.x, cam.y, cam.z), -camRot.y);
-			point.rotate("z", new Vec3(cam.x, cam.y, cam.z), -camRot.z);
+			point.rotate("y", new Vec3(player.position.x, player.position.y, player.position.z), -camRot.y);
+			point.rotate("x", new Vec3(player.position.x, player.position.y, player.position.z), -camRot.x);
+			point.rotate("z", new Vec3(player.position.x, player.position.y, player.position.z), -camRot.z);
 			int x = (int) point.x;
 			int y = (int) point.y;
 			int z = (int) point.z;
-			
-			int average_len = H/2;
-			int ry;
-			if(cam.z >= z+average_len){
-				ry=(int) (W-cam.y + y);
-			}else{
-				ry = (int) (((y-cam.y) * ( average_len) ) / ( z+ ( average_len) -cam.z)) + H/2;
+			int rx = (int) (( (x-player.position.x) * ( W / 2 ) ) / ( z + ( W / 2 ) - player.position.z)+W/2);
+			if(player.position.z>=z+W/2){
+				rx = (int) (( (x-player.position.x) * ( W / 2 ) ) / (player.position.z -( z + ( W / 2 )))+W/2);
 			}
-			
-			average_len = W/2;
-			int rx;
-			if(cam.z >= z+average_len){
-				rx = (int) (((x-cam.x) * ( average_len ) ) / (150)) + W/2;
-			}else{
-				rx= (int) (((x-cam.x) * ( average_len ) ) / ( z + ( W/2) -cam.z)) + W/2;
+			int ry = (int) (( (y-player.position.y) * ( H / 2 ) ) / ( z + ( H / 2 ) - player.position.z)+H/2);
+//			ry += H/2-Block.size*3;
+			if(player.position.z>=z+H/2){
+				ry = (int) (( (y-player.position.y) * ( H / 2 ) ) / -( z + ( H / 2 ) - player.position.z)+H/2-y);
 			}
 			int[] i = {rx, ry};
 			return i;
@@ -222,9 +183,9 @@ public class Draw implements Serializable{
 				vec2.x = ((Vec3)obj.get(arrays[i][2])).x;
 				vec2.y = ((Vec3)obj.get(arrays[i][2])).y;
 				vec2.z = ((Vec3)obj.get(arrays[i][2])).z;
-				Vec3.midpoint(vec1, vec2);
+				vec1 = Vec3.midpoint(vec1, vec2);
 				
-				VecsMidZ[i]=(Integer)(int) vec1.z;
+				VecsMidZ[i]=(Integer)(int) Vec3.distance(player.position, vec1);
 //				VecsMidZ[i] = ((int) ((Vec3)(vecs.get(iArray[0]))).z);
 				VecsMidZ[i] *= 10;
 				VecsMidZ[i] += i;
@@ -287,91 +248,59 @@ public class Draw implements Serializable{
 			
 		}
 		public void update(){
-			BoxCollider playerBox = player.boxCollider;
 			if(ticks > 0 && mul == 1){
 				ticks -= rate;
 			}
 			panel.requestFocus();
+//			Collections.sort(objects, (Object3d o1,Object3d o2) -> ((Float)(Vec3.distance(player,position, o1.position).compareTo((Float)(Vec3.distance(player,position, o2.position))))));
+			Collections.sort(objects, new Comparator<Object3d>(){
+			  public int compare(Object3d o1, Object3d o2){
+			    return (int) -(dist(o1)-dist(o2));
+			  }
+			  private float dist(Object3d o){
+				  return Vec3.distance(player.position, o.position);
+			  }
+			});
+			if(mouse[0]){
+				Object3d hit = Object3d.raycast(objects, player.position, camRot, 10);
+				if(hit!=null){
+					hit.translate(Vec3.UP.multiply(Block.size*1));
+				}
+			}
 //			Object3d.addVelocityArray(objects, new Vec3(0, -1, 0).multiply(0.6f*rate));//gravity happens to be 0.32 units be second
-			player.addVelocity(new Vec3(0, 1, 0).multiply(0.6f*rate));
-			ArrayList left = new ArrayList<Object3d>();
-			ArrayList right = new ArrayList<Object3d>();
-			for(int i=objects.size()-1; i>=0; i--){
-				if(i%2 == 0){
-					left.add(objects.get(i));
-				}else{
-					right.add(objects.get(i));
-				}
-			}
-			Object3d.setVelocityArrayX(left, 1, 500);
-			Object3d.setVelocityArrayX(right, -1, 500);
-			playerBox.isTouchingArrayGrav(objects);
-			for(int i=objects.size()-1; i>=0; i--){
-				Object3d obj = objects.get(i);
-				if(playerBox.isTouching(obj.boxCollider)){
-					if(objects.size() - i-1>score){
-						score = objects.size() - i - 1;
-						scoreLabel.setText(score + "");
-					}
-					if(score == objects.size() - 1){
-						scoreLabel.setText("YOU WIN!!!");
-					}
-				}
-			}
+			player.addVelocity(new Vec3(0, 1, 0).multiply(1f*rate));
+			player.boxCollider.isTouchingArrayGrav(objects);
 			Object3d.updateArray(objects);
 			boolean updated = false;
 			mul = 1;
 			if(keys[KeyEvent.VK_SHIFT] || keys[KeyEvent.VK_W] && ticks > 0 || keys[KeyEvent.VK_R]){
 				mul = 2;
 			}
-			mul*=rate;
+			mul*=rate*Block.size/50;
 			if(keys[KeyEvent.VK_W] && keyDown){
-//				Object3d.translateArray(objects, Vec3.FORWARD.multiply(10*mul));
-//				player.translate(Vec3.FORWARD.multiply(10*mul));
-				player.translate(player.position.forward(camRot).multiply(10*mul));
-//				player.update();
-				cam = player.position;
-				z -= 10;
+				Vec3 val = Vec3.forward(camRot).multiply(10*mul);
+				val.y = 0;
+				player.translate(val);
 			} if(keys[KeyEvent.VK_S] && keyDown){
-//				Object3d.translateArray(objects, Vec3.BACKWARD.multiply(10*mul));
-//				player.translate(Vec3.BACKWARD.multiply(10*mul));
-				player.translate(player.position.forward(camRot).multiply(-10*mul));
-//				player.update();
-				cam = player.position;
-				z += 10;
+				Vec3 val = Vec3.forward(camRot).multiply(-10*mul);
+				val.y = 0;
+				player.translate(val);
 			} if(keys[KeyEvent.VK_A] && keyDown){
-//				Object3d.translateArray(objects, Vec3.LEFT.multiply(10*mul));
-//				player.translate(Vec3.LEFT.multiply(10*mul));
-				player.translate(player.position.right(camRot).multiply(-10f*mul));
-//				player.update();
-				cam = player.position;
-				x -= 10;
+				Vec3 val = Vec3.right(camRot).multiply(-10f*mul);
+				val.y = 0;
+				player.translate(val);
 			} if(keys[KeyEvent.VK_D] && keyDown){
-//				Object3d.translateArray(objects, Vec3.RIGHT.multiply(10*mul));
-				player.translate(player.position.right(camRot).multiply(10f*mul));
-//				player.update();
-				cam = player.position;
-				x += 10;
+				Vec3 val = Vec3.right(camRot).multiply(10f*mul);
+				val.y = 0;
+				player.translate(val);
 			}
-//			if(keys[KeyEvent.VK_Q] && keyDown){
-//				camRot.y -= 1;
-//				cam.rotate("y", player.position, -1);
-//				player.rotate("y", player.position, -1);
-//			} if(keys[KeyEvent.VK_E] && keyDown){
-//				camRot.y += 1;
-//				cam.rotate("y", player.position, 1);
-//				player.rotate("y", player.position, 1);
-//			}
 			if(keys[KeyEvent.VK_SPACE] && keyDown && /*toggled*/ grounded){
-				Vec3 jumpVec = new Vec3(0, -20, 0);
+				Vec3 jumpVec = new Vec3(0, -30, 0);
 				player.setVelocity(jumpVec.multiply(rate));
-//				player.update();
-//				Object3d.addVelocityArray(objects, jumpVec.multiply(rate));
 			}
 			if(!updated){
 				player.update();
 			}
-			cam.y = (int) player.position.y - 150;
 			
 			if(keys[KeyEvent.VK_M]){
 				Main.save();
@@ -385,25 +314,35 @@ public class Draw implements Serializable{
 			if(keys[KeyEvent.VK_ESCAPE]){
 				System.exit(0);
 			}
-//			System.out.println(y);
-//			cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-//			blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-//				    cursorImg, new Point(0, 0), "blank cursor");
-//			this.setCursor(blankCursor);
 			this.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 	        int mouseX = MouseInfo.getPointerInfo().getLocation().x;  
 			int mouseY = MouseInfo.getPointerInfo().getLocation().y;
 			int distX = W/2 - mouseX;
 			int distY = H/2 - mouseY;
-			float sesitiv = 0.1f;
+			if(distX>=14){
+				distX=14;
+			}
 			camRot.y -= distX*rate;
-			cam.rotate("y", player.position, -distX*rate*sesitiv);
-			player.rotate("y", player.position, -distX*rate);
+			camRot.x += distY*rate;
 			try {
 			    Robot robot = new Robot();
 			    robot.mouseMove(W/2, H/2);
 			} catch (AWTException e) {
 			}
 		}
+		@Override
+		public void mouseClicked(MouseEvent e) {}
+		@Override
+		public void mousePressed(MouseEvent e) {
+			mouse[e.getButton()-1]=true;
+		}
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			mouse[e.getButton()-1]=false;
+		}
+		@Override
+		public void mouseEntered(MouseEvent e) {}
+		@Override
+		public void mouseExited(MouseEvent e) {}
 	}
 }
