@@ -1,6 +1,6 @@
 package com.awesomeness.blocky;
 import java.io.*;
-
+//a comment: this is main
 public class Main {
 	static Draw d;
 	public static void main(String[] args) {
