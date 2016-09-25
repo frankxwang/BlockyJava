@@ -159,30 +159,12 @@ public class Draw implements Serializable{
 			int x = (int) point.x;
 			int y = (int) point.y;
 			int z = (int) point.z;
-			
-//			int average_len = H/2;
-//			int ry;
-//			if(Vec3.angle(player.position.forward(camRot).add(player.position), player.position, point) >= 90){
-//				ry = (int) (y-player.position.y + H - 50);
-//				System.out.println("fila");
-//			}else{
-//				ry = (int) (((y-player.position.y) * ( average_len) ) / ( z+ ( average_len) -player.position.z)) + H/2;
-//				ry += H/2-50;
-//			}
-//			
-//			average_len = W/2;
-//			int rx;
-//			if(player.position.z >= z+average_len){
-//				rx = (int) (((x-player.position.x) * ( average_len ) ) / (150)) + W/2;
-//			}else{
-//				rx= (int) (((x-player.position.x) * ( average_len ) ) / ( z + ( W/2) -player.position.z)) + W/2;
-//			}
 			int rx = (int) (( (x-player.position.x) * ( W / 2 ) ) / ( z + ( W / 2 ) - player.position.z)+W/2);
 			if(player.position.z>=z+W/2){
 				rx = (int) (( (x-player.position.x) * ( W / 2 ) ) / (player.position.z -( z + ( W / 2 )))+W/2);
 			}
 			int ry = (int) (( (y-player.position.y) * ( H / 2 ) ) / ( z + ( H / 2 ) - player.position.z)+H/2);
-			ry += H/2-Block.size*3;
+//			ry += H/2-Block.size*3;
 			if(player.position.z>=z+H/2){
 				ry = (int) (( (y-player.position.y) * ( H / 2 ) ) / -( z + ( H / 2 ) - player.position.z)+H/2-y);
 			}
