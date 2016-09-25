@@ -21,7 +21,7 @@ public class Draw implements Serializable{
 	public static final Vec3 CENTER = new Vec3(W/2, H/2, 0);
 	public FrameDraw panel;
 	public static JFrame frame;
-	public Object3d player;
+	public Player player;
 //	public BoxCollider player.boxCollider;
 	public static boolean jump = false;
 	public static boolean grounded = false;
@@ -40,7 +40,7 @@ public class Draw implements Serializable{
 		}
 		keys = new boolean[KeyEvent.KEY_LAST];
 		mouse = new boolean[3];
-		player = new RectPrism(CENTER.add(new Vec3(0, 50, 0)), Block.size/2, Block.size*2, Block.size/2);
+		player = new Player(CENTER.add(new Vec3(0, 50, 0)), Block.size/2, Block.size*2, Block.size/2);
 //		player.boxCollider = new BoxCollider(CENTER.add(new Vec3(0, 50, 0)), CENTER.add(new Vec3(1, 50, 1)));
 //		player.boxCollider = player.boxCollider;
 		frame = new JFrame();
@@ -267,7 +267,7 @@ public class Draw implements Serializable{
 			}
 //			Object3d.addVelocityArray(objects, new Vec3(0, -1, 0).multiply(0.6f*rate));//gravity happens to be 0.32 units be second
 			player.addVelocity(new Vec3(0, 1, 0).multiply(1f*rate));
-			player.boxCollider.isTouchingArrayGrav(objects);
+			player.collider.isTouchingArrayGrav(objects);
 			Object3d.updateArray(objects);
 			boolean updated = false;
 			mul = 1;
