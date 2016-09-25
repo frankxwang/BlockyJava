@@ -328,6 +328,9 @@ public class Draw implements Serializable{
 			    robot.mouseMove(W/2, H/2);
 			} catch (AWTException e) {
 			}
+			if(player.position.y > Block.size * 25){
+				player.position = CENTER;
+			}
 		}
 		@Override
 		public void mouseClicked(MouseEvent e) {}
@@ -343,5 +346,6 @@ public class Draw implements Serializable{
 		public void mouseEntered(MouseEvent e) {}
 		@Override
 		public void mouseExited(MouseEvent e) {}
+		
 	}
 }

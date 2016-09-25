@@ -186,4 +186,8 @@ public class Object3d implements Serializable{
 		}
 		return o;
 	}
+	public void setPosition(){
+//		Draw d = new Draw();
+//		d.CENTER = new Vec3(d.W/2, d.H/2, 0);
+	}
 }
