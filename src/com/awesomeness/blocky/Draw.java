@@ -386,10 +386,11 @@ public class Draw implements Serializable{
 				System.exit(0);
 			}
 //			System.out.println(y);
-			cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-			blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-				    cursorImg, new Point(0, 0), "blank cursor");
-			this.setCursor(blankCursor);
+//			cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+//			blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+//				    cursorImg, new Point(0, 0), "blank cursor");
+//			this.setCursor(blankCursor);
+			this.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 	        int mouseX = MouseInfo.getPointerInfo().getLocation().x;  
 			int mouseY = MouseInfo.getPointerInfo().getLocation().y;
 			int distX = W/2 - mouseX;
