@@ -113,7 +113,12 @@ public class Draw implements Serializable{
 			for (int i = 0; i < obj.size(); i++) {
 				Vec3 vec = (Vec3) obj.get(i);
 				drawPoint(vec,g);
+				drawPoint(vec, g);
+				char[] charAr = {Integer.toString(i).charAt(0)};
+				int[] coords = getXY(vec);
+				g.drawChars(charAr, 0, 1, coords[0], coords[1]);
 			}
+			g.setColor(Color.green);
 			drawPoint(Object3d.raycastVec(objects, player.position, camRot, 10), g);
 		}
 		private int[][] getArray(ArrayList<Vec3> vecs, int[] array){
@@ -175,23 +180,16 @@ public class Draw implements Serializable{
 			Object3d obj = objects.get(0);
 			Integer[] VecsMidZ = new Integer[arrays.length];
 			for(int i=0; i<arrays.length; i++){
-				Vec3 vec1 = new Vec3(0,0,0);
-				vec1.x = ((Vec3)obj.get(arrays[i][0])).x;
-				vec1.y = ((Vec3)obj.get(arrays[i][0])).y;
-				vec1.z = ((Vec3)obj.get(arrays[i][0])).z;
-				Vec3 vec2 = new Vec3(0,0,0);//(Vec3) vecs.get(arrays[i][2]);
-				vec2.x = ((Vec3)obj.get(arrays[i][2])).x;
-				vec2.y = ((Vec3)obj.get(arrays[i][2])).y;
-				vec2.z = ((Vec3)obj.get(arrays[i][2])).z;
+				Vec3 vec1 = ((Vec3)obj.get(arrays[i][0])).clone();
+				Vec3 vec2 = ((Vec3)obj.get(arrays[i][2])).clone();
 				vec1 = Vec3.midpoint(vec1, vec2);
 				
-				VecsMidZ[i]=(Integer)(int) Vec3.distance(player.position, vec1);
+				VecsMidZ[i]=(Integer)(int) Vec3.distance(player.position.add(Vec3.UP.multiply(Block.size)), vec1);
 //				VecsMidZ[i] = ((int) ((Vec3)(vecs.get(iArray[0]))).z);
 				VecsMidZ[i] *= 10;
 				VecsMidZ[i] += i;
 			}
 			Arrays.sort(VecsMidZ, Collections.reverseOrder());
-			@SuppressWarnings("unused")
 			int[] sorted = new int[arrays.length];
 			int[][] temp = new int[arrays.length][arrays[0].length];
 			for(int i=0; i<arrays.length; i++){
