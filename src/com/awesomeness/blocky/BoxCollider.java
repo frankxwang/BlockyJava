@@ -17,12 +17,12 @@ public class BoxCollider implements Serializable{
 	}
 	
 	public boolean isTouching(BoxCollider b){
-		Vec3 B1 = this.vec1.clone();
-		Vec3 B2 = this.vec2.clone();
+		Vec3 B1 = this.vec1.copy();
+		Vec3 B2 = this.vec2.copy();
 		Vec3 B3 = Vec3.midpoint(B1, B2);
 		
-		Vec3 A1 = b.vec1.clone();
-		Vec3 A2 = b.vec2.clone();
+		Vec3 A1 = b.vec1.copy();
+		Vec3 A2 = b.vec2.copy();
 		
 		if(((A1.x<=B3.x && A2.x>=B3.x) || (A1.x>=B3.x && A2.x<=B3.x)) &&
 			((A1.y<=B3.y && A2.y>=B3.y) || (A1.y>=B3.y && A2.y<=B3.y)) &&
@@ -40,7 +40,7 @@ public class BoxCollider implements Serializable{
 		return false;
 	}
 	
-	public void isTouchingArrayGrav(ArrayList objs){
+	public void isTouchingArrayGrav(ArrayList<?> objs){
 		BoxCollider[] array = new BoxCollider[objs.size()];
 		for(int i=0; i<objs.size(); i++){
 			array[i] = ((Object3d)objs.get(i)).boxCollider;

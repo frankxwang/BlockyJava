@@ -2,7 +2,7 @@ package com.awesomeness.blocky;
 import java.awt.*;
 
 import java.awt.event.*;
-import java.awt.image.*;
+//import java.awt.image.*;
 import java.io.*;
 
 import javax.swing.*;
@@ -36,7 +36,7 @@ public class Draw implements Serializable{
 		try {
 		    Robot robot = new Robot();
 		    robot.mouseMove(W/2, H/2);
-		} catch (AWTException e) {
+		} catch (Exception e) {
 		}
 		keys = new boolean[KeyEvent.KEY_LAST];
 		mouse = new boolean[3];
@@ -71,7 +71,6 @@ public class Draw implements Serializable{
 		load();
 	}
 	
-	@SuppressWarnings("null")
 	Draw() {
 		init();
 	}
@@ -148,11 +147,11 @@ public class Draw implements Serializable{
 			int[] coords = getXY(vec);
 			g.fillRect(coords[0], coords[1], 5, 5);
 		}
-		private void drawPlayerPoint(Vec3 vec, Graphics g, int size){
-			g.fillRect((int)(vec.x - size/2), (int)(vec.y-size/2), size, size);
-		}
+//		private void drawPlayerPoint(Vec3 vec, Graphics g, int size){
+//			g.fillRect((int)(vec.x - size/2), (int)(vec.y-size/2), size, size);
+//		}
 		private int[] getXY(Vec3 vec){
-			Vec3 point = vec.clone();
+			Vec3 point = vec.copy();
 			point.rotate("y", new Vec3(player.position.x, player.position.y, player.position.z), -camRot.y);
 			point.rotate("x", new Vec3(player.position.x, player.position.y, player.position.z), -camRot.x);
 			point.rotate("z", new Vec3(player.position.x, player.position.y, player.position.z), -camRot.z);
@@ -191,8 +190,7 @@ public class Draw implements Serializable{
 				VecsMidZ[i] += i;
 			}
 			Arrays.sort(VecsMidZ, Collections.reverseOrder());
-			@SuppressWarnings("unused")
-			int[] sorted = new int[arrays.length];
+//			int[] sorted = new int[arrays.length];
 			int[][] temp = new int[arrays.length][arrays[0].length];
 			for(int i=0; i<arrays.length; i++){
 				for(int j=0; j<arrays[0].length; j++){

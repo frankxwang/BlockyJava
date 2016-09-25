@@ -2,6 +2,10 @@ package com.awesomeness.blocky;
 import java.util.ArrayList;
 
 public class RectPrism extends Object3d{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	RectPrism(){
 	}
 	RectPrism(Vec3 center, float x, float y, float z){

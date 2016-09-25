@@ -3,6 +3,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+@SuppressWarnings("unused")
 public class Object3d implements Serializable{
 	
 	static final long serialVersionUID = -7298352464830308761L;
@@ -14,13 +15,13 @@ public class Object3d implements Serializable{
 	Object3d(){
 	}
 	
-	Object3d(ArrayList vecs){
+	Object3d(ArrayList<Vec3> vecs){
 		this.vecs = vecs;
 		setBox();
 	}
 	
 	public void setBox(){
-		position = Vec3.midpoint((Vec3) vecs.get(0).clone(),(Vec3) vecs.get(5).clone());
+		position = Vec3.midpoint((Vec3) vecs.get(0).copy(),(Vec3) vecs.get(5).copy());
 		boxCollider = new BoxCollider((Vec3)vecs.get(1), (Vec3)vecs.get(6));
 	}
 	
@@ -172,7 +173,7 @@ public class Object3d implements Serializable{
 		return null;
 	}
 	public static Vec3 raycastVec(ArrayList<Object3d> objs, Vec3 origin, Vec3 rot, float dist){
-		Vec3 o = origin.clone();
+		Vec3 o = origin.copy();
 		Vec3 dir = Vec3.forward(rot).multiply(Block.size);
 		for(int j=0; j<dist; j++){
 			BoxCollider point = new BoxCollider(o, o.add(new Vec3(1,1,1)));
