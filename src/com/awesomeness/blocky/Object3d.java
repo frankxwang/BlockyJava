@@ -37,6 +37,10 @@ public class Object3d implements Serializable{
 		this.velocity = vec;
 	}
 	
+	void setVelocityZ(float v) {
+		this.velocity.z = v;
+	}
+	
 	public void setVelocityY(float v){
 		this.velocity.y = v;
 	}
@@ -140,6 +144,13 @@ public class Object3d implements Serializable{
 			((Object3d) objs.get(i)).setVelocityY(v);
 		}
 	}
+	
+	public static void setVelocityArrayZ(ArrayList<Object3d> objs, float v){
+		for (int i = 0; i < objs.size(); i++) {
+			((Object3d) objs.get(i)).setVelocityZ(v);
+		}
+	}
+
 	public static Object3d raycast(ArrayList<Object3d> objs, Vec3 origin, Vec3 rot, float dist){
 		Vec3 dir = Vec3.forward(rot).multiply(Block.size);
 //		Vec3 forward = Draw.player.position.forward(Main.d.camRot);

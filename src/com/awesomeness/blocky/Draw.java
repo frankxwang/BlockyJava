@@ -275,19 +275,19 @@ public class Draw implements Serializable{
 				mul = 2;
 			}
 			mul*=rate*Block.size/50;
-			if(keys[KeyEvent.VK_W] && keyDown){
+			if(keys[KeyEvent.VK_W] && keyDown && !player.collider.cZ){
 				Vec3 val = Vec3.forward(camRot).multiply(10*mul);
 				val.y = 0;
 				player.translate(val);
-			} if(keys[KeyEvent.VK_S] && keyDown){
+			} if(keys[KeyEvent.VK_S] && keyDown && !player.collider.cZ){
 				Vec3 val = Vec3.forward(camRot).multiply(-10*mul);
 				val.y = 0;
 				player.translate(val);
-			} if(keys[KeyEvent.VK_A] && keyDown){
+			} if(keys[KeyEvent.VK_A] && keyDown && !player.collider.cX){
 				Vec3 val = Vec3.right(camRot).multiply(-10f*mul);
 				val.y = 0;
 				player.translate(val);
-			} if(keys[KeyEvent.VK_D] && keyDown){
+			} if(keys[KeyEvent.VK_D] && keyDown && !player.collider.cX){
 				Vec3 val = Vec3.right(camRot).multiply(10f*mul);
 				val.y = 0;
 				player.translate(val);
