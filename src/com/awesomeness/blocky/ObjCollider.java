@@ -97,36 +97,42 @@ public class ObjCollider extends BoxCollider{
 			array[i] = ((Object3d)objs.get(i)).boxCollider;
 		}
 		for(BoxCollider b:array){
-			int face = face(b);
-			if(face!=-1){
-				System.out.println(face);
+			if(isTouching(b)){
 				if(!Draw.jump){
-					if(face == 3){
-						Main.d.player.setVelocityY(0);
-					}
+					Main.d.player.setVelocityY(0);
 					Draw.grounded = true;
 					break;
-//					Draw.toggled = true;
-//					Draw.toggled = false;
 				}else{
 					timer.schedule(new setVals(), 40);
-				}
-				if(face == 1 || face == 2){
-					Main.d.player.setVelocityX(0);
-					cX = true;
-				}else{
-					cX = false;
-				}
-				if(face == 4 || face == 5){
-					Main.d.player.setVelocityZ(0);
-					cZ = true;
-				}else{
-					cZ = false;
 				}
 			}else{
 				timer.schedule(new setGrounded(), 10);
 			}
 		}
+//		System.out.println(face);
+//		if(!Draw.jump){
+//			if(face == 3){
+//				Main.d.player.setVelocityY(0);
+//			}
+//			Draw.grounded = true;
+//			break;
+////			Draw.toggled = true;
+////			Draw.toggled = false;
+//		}else{
+//			timer.schedule(new setVals(), 40);
+//		}
+//		if(face == 1 || face == 2){
+//			Main.d.player.setVelocityX(0);
+//			cX = true;
+//		}else{
+//			cX = false;
+//		}
+//		if(face == 4 || face == 5){
+//			Main.d.player.setVelocityZ(0);
+//			cZ = true;
+//		}else{
+//			cZ = false;
+//		}
 	}
 
 	class setGrounded extends TimerTask{
