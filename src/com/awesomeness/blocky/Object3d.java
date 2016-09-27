@@ -18,6 +18,10 @@ public class Object3d implements Serializable{
 		this.vecs = vecs;
 		setBox();
 	}
+	public void setPos(Vec3 vec){
+		
+	}
+	
 	
 	public void setBox(){
 		position = Vec3.midpoint((Vec3) vecs.get(1).clone(),(Vec3) vecs.get(6).clone());
