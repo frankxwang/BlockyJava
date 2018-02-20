@@ -1,4 +1,4 @@
-package com.awesomeness.blocky;
+package com.forhacks.blocky;
 import java.io.*;
 //a comment: this is main
 public class Main {

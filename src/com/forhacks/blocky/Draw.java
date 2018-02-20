@@ -1,4 +1,4 @@
-package com.awesomeness.blocky;
+package com.forhacks.blocky;
 import java.awt.*;
 
 import java.awt.event.*;
